@@ -1,5 +1,5 @@
 import express from 'express';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, SectionType, PageOrientation } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -54,7 +54,7 @@ function cleanAndParseContent(content: string): Paragraph[] {
             })
           ],
           spacing: { after: 200 },
-          alignment: "justify"
+          alignment: "both"
         })
       );
     }
