@@ -28,66 +28,76 @@ function cleanAndParseContent(content: string): Paragraph[] {
     const isHeader = /^(Page \d+ Analysis:|Main Idea:|Expert Insight:|Detailed Walkthrough:|Potential Confusion:|Relevance:|Create and Refine|Influence Claude|Evaluate Model|Build, Update)/i.test(trimmedPara);
     
     if (isHeader) {
-      // Create flashy header with gradient-like styling
-      const headerColors = ["2563EB", "7C3AED", "DC2626", "059669", "D97706"]; // Blue, Purple, Red, Green, Orange
-      const headerColor = headerColors[index % headerColors.length];
-      
-      docParagraphs.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: "● ", // Bullet point
-              bold: true,
-              size: 24,
-              color: headerColor,
-              font: "Arial"
-            }),
-            new TextRun({
-              text: trimmedPara,
-              bold: true,
-              size: 22, // 11pt font
-              color: headerColor,
-              font: "Arial"
-            })
-          ],
-          spacing: { before: 360, after: 180 },
-          shading: {
-            type: "solid",
-            color: "F8FAFC", // Very light gray background
-            fill: "F8FAFC"
-          },
-          border: {
-            left: {
-              color: headerColor,
-              space: 1,
-              style: "single",
-              size: 12 // Thick left border
-            }
-          },
-          indent: {
-            left: 144 // Indent from left border
-          }
-        })
-      );
+      // Find where the header label ends (after the colon)
+      const colonIndex = trimmedPara.indexOf(':');
+      if (colonIndex > -1) {
+        const headerLabel = trimmedPara.substring(0, colonIndex + 1); // Include the colon
+        const remainingText = trimmedPara.substring(colonIndex + 1).trim(); // Rest of the text
+        
+        // Create paragraph with bold header and regular text
+        docParagraphs.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: headerLabel + " ",
+                bold: true,
+                size: 20, // 10pt font
+                color: "000000", // Black text
+                font: {
+                  name: "Times New Roman"
+                }
+              }),
+              new TextRun({
+                text: remainingText,
+                bold: false,
+                size: 20, // 10pt font
+                color: "000000", // Black text
+                font: {
+                  name: "Times New Roman"
+                }
+              })
+            ],
+            spacing: { before: 240, after: 120 },
+            alignment: "both"
+          })
+        );
+      } else {
+        // Header without colon (like "Create and Refine Usage Policy")
+        docParagraphs.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: trimmedPara,
+                bold: true,
+                size: 20, // 10pt font
+                color: "000000", // Black text
+                font: {
+                  name: "Times New Roman"
+                }
+              })
+            ],
+            spacing: { before: 240, after: 120 },
+            alignment: "both"
+          })
+        );
+      }
     } else {
-      // Create styled regular paragraph with modern typography
+      // Create regular paragraph
       docParagraphs.push(
         new Paragraph({
           children: [
             new TextRun({
               text: trimmedPara,
               size: 20, // 10pt font
-              color: "1F2937", // Dark text for readability
-              bold: false, // Explicitly set to false
-              font: "Arial" // Specify font family
+              color: "000000", // Black text
+              bold: false,
+              font: {
+                name: "Times New Roman"
+              }
             })
           ],
-          spacing: { after: 160 },
-          alignment: "both",
-          indent: {
-            left: 144, // Align with header content
-            hanging: 0
-          }
+          spacing: { after: 120 },
+          alignment: "both"
         })
       );
     }
@@ -121,52 +131,21 @@ router.post('/', async (req, res): Promise<void> => {
           },
         },
         children: [
-          // Document title with flashy styling
+          // Simple document title
           new Paragraph({
             children: [
               new TextRun({ 
-                text: "✦ ", 
-                bold: true, 
-                size: 32,
-                color: "2563EB", // Blue
-                font: "Arial"
-              }),
-              new TextRun({ 
                 text: title, 
                 bold: true, 
-                size: 28, // 14pt font
-                color: "1F2937",
-                font: "Arial"
-              }),
-              new TextRun({ 
-                text: " ✦", 
-                bold: true, 
-                size: 32,
-                color: "2563EB", // Blue
-                font: "Arial"
+                size: 24, // 12pt font
+                color: "000000", // Black text
+                font: {
+                  name: "Times New Roman"
+                }
               })
             ],
-            spacing: { after: 480 },
-            alignment: "center",
-            shading: {
-              type: "solid",
-              color: "F0F9FF", // Very light blue background
-              fill: "F0F9FF"
-            },
-            border: {
-              top: {
-                color: "2563EB",
-                space: 2,
-                style: "double",
-                size: 6
-              },
-              bottom: {
-                color: "2563EB",
-                space: 2,
-                style: "double", 
-                size: 6
-              }
-            }
+            spacing: { after: 360 },
+            alignment: "center"
           }),
           // Content paragraphs (will flow in 2 columns)
           ...contentParagraphs
