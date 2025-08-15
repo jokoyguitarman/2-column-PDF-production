@@ -21,7 +21,7 @@ function cleanAndParseContent(content: string): Paragraph[] {
   const paragraphs = cleanContent.split('\n\n').filter(p => p.trim());
   const docParagraphs: Paragraph[] = [];
   
-  paragraphs.forEach((para, index) => {
+  paragraphs.forEach((para) => {
     const trimmedPara = para.trim();
     
     // Check if it's a header (contains "Main Idea:", "Expert Insight:", etc.)
