@@ -28,19 +28,23 @@ function cleanAndParseContent(content: string): Paragraph[] {
     const isHeader = /^(Page \d+ Analysis:|Main Idea:|Expert Insight:|Detailed Walkthrough:|Potential Confusion:|Relevance:|Create and Refine|Influence Claude|Evaluate Model|Build, Update)/i.test(trimmedPara);
     
     if (isHeader) {
-      // Create header paragraph
+      // Create header paragraph with background color
       docParagraphs.push(
         new Paragraph({
           children: [
             new TextRun({
               text: trimmedPara,
               bold: true,
-              size: 28, // 14pt font
-              color: "2563EB" // Blue color
+              size: 20, // 10pt font
+              color: "FFFFFF" // White text
             })
           ],
-          heading: HeadingLevel.HEADING_2,
-          spacing: { before: 400, after: 200 }
+          spacing: { before: 240, after: 120 },
+          shading: {
+            type: "solid",
+            color: "2563EB", // Blue background
+            fill: "2563EB"
+          }
         })
       );
     } else {
@@ -50,10 +54,11 @@ function cleanAndParseContent(content: string): Paragraph[] {
           children: [
             new TextRun({
               text: trimmedPara,
-              size: 22 // 11pt font
+              size: 20, // 10pt font
+              color: "374151" // Dark gray text
             })
           ],
-          spacing: { after: 200 },
+          spacing: { after: 120 },
           alignment: "both"
         })
       );
@@ -88,24 +93,26 @@ router.post('/', async (req, res): Promise<void> => {
           },
         },
         children: [
-          // Title (spans across both columns)
+          // Document title at the top
           new Paragraph({
             children: [
               new TextRun({ 
                 text: title, 
                 bold: true, 
-                size: 36, // 18pt font
+                size: 24, // 12pt font
                 color: "1F2937" // Dark gray
               })
             ],
-            heading: HeadingLevel.TITLE,
-            spacing: { after: 600 },
-            alignment: "center"
-          }),
-          // Add a line break after title
-          new Paragraph({
-            children: [new TextRun({ text: "", size: 20 })],
-            spacing: { after: 400 }
+            spacing: { after: 360 },
+            alignment: "center",
+            border: {
+              bottom: {
+                color: "D1D5DB",
+                space: 1,
+                style: "single",
+                size: 6
+              }
+            }
           }),
           // Content paragraphs (will flow in 2 columns)
           ...contentParagraphs
