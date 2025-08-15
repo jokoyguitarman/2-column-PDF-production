@@ -20,12 +20,19 @@ function cleanAndParseContent(content: string): Paragraph[] {
     const isMarkdownHeader = trimmedPara.startsWith('###') || trimmedPara.startsWith('##') || trimmedPara.startsWith('#');
     const hasBoldFormatting = trimmedPara.includes('**');
     
-    // Clean the text by removing markdown markers
+    // Clean the text by removing ALL markdown markers thoroughly
     let cleanText = trimmedPara
       .replace(/^#+\s*/g, '') // Remove ### ## # from start
       .replace(/\*\*\*/g, '') // Remove triple asterisks
       .replace(/\*\*/g, '') // Remove double asterisks
-      .replace(/\*([^*]+)\*/g, '$1'); // Remove single asterisks but keep content
+      .replace(/\*([^*]+)\*/g, '$1') // Remove single asterisks but keep content
+      .replace(/#+/g, '') // Remove any remaining # symbols
+      .replace(/\*/g, '') // Remove any remaining * symbols
+      .replace(/_{2,}/g, '') // Remove underscores __ 
+      .replace(/_([^_]+)_/g, '$1') // Remove single underscores but keep content
+      .replace(/`{1,3}/g, '') // Remove backticks ``` `` `
+      .replace(/~~([^~]+)~~/g, '$1') // Remove strikethrough ~~ but keep content
+      .trim(); // Clean up whitespace
     
     if (isMarkdownHeader || hasBoldFormatting) {
       // It's a header - check if it has a colon to split bold/regular parts
