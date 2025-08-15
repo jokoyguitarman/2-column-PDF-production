@@ -21,48 +21,70 @@ function cleanAndParseContent(content: string): Paragraph[] {
   const paragraphs = cleanContent.split('\n\n').filter(p => p.trim());
   const docParagraphs: Paragraph[] = [];
   
-  paragraphs.forEach(para => {
+  paragraphs.forEach((para, index) => {
     const trimmedPara = para.trim();
     
     // Check if it's a header (contains "Main Idea:", "Expert Insight:", etc.)
     const isHeader = /^(Page \d+ Analysis:|Main Idea:|Expert Insight:|Detailed Walkthrough:|Potential Confusion:|Relevance:|Create and Refine|Influence Claude|Evaluate Model|Build, Update)/i.test(trimmedPara);
     
     if (isHeader) {
-      // Create header paragraph - bold and slightly larger
+      // Create flashy header with gradient-like styling
+      const headerColors = ["2563EB", "7C3AED", "DC2626", "059669", "D97706"]; // Blue, Purple, Red, Green, Orange
+      const headerColor = headerColors[index % headerColors.length];
+      
       docParagraphs.push(
         new Paragraph({
           children: [
             new TextRun({
+              text: "● ", // Bullet point
+              bold: true,
+              size: 24,
+              color: headerColor
+            }),
+            new TextRun({
               text: trimmedPara,
               bold: true,
-              size: 22, // 11pt font - slightly larger for headers
-              color: "1F2937" // Dark gray text
+              size: 22, // 11pt font
+              color: headerColor
             })
           ],
-          spacing: { before: 300, after: 150 },
+          spacing: { before: 360, after: 180 },
+          shading: {
+            type: "solid",
+            color: "F8FAFC", // Very light gray background
+            fill: "F8FAFC"
+          },
           border: {
-            bottom: {
-              color: "E5E7EB", // Light gray underline
+            left: {
+              color: headerColor,
               space: 1,
               style: "single",
-              size: 3
+              size: 12 // Thick left border
             }
+          },
+          indent: {
+            left: 144 // Indent from left border
           }
         })
       );
     } else {
-      // Create regular paragraph
+      // Create styled regular paragraph with modern typography
       docParagraphs.push(
         new Paragraph({
           children: [
             new TextRun({
               text: trimmedPara,
               size: 20, // 10pt font
-              color: "374151" // Dark gray text
+              color: "1F2937", // Dark text for readability
+              bold: false // Explicitly set to false
             })
           ],
-          spacing: { after: 120 },
-          alignment: "both"
+          spacing: { after: 160 },
+          alignment: "both",
+          indent: {
+            left: 144, // Align with header content
+            hanging: 0
+          }
         })
       );
     }
@@ -96,24 +118,47 @@ router.post('/', async (req, res): Promise<void> => {
           },
         },
         children: [
-          // Document title at the top
+          // Document title with flashy styling
           new Paragraph({
             children: [
+              new TextRun({ 
+                text: "✦ ", 
+                bold: true, 
+                size: 32,
+                color: "2563EB" // Blue
+              }),
               new TextRun({ 
                 text: title, 
                 bold: true, 
                 size: 28, // 14pt font
-                color: "111827" // Very dark gray
+                color: "1F2937"
+              }),
+              new TextRun({ 
+                text: " ✦", 
+                bold: true, 
+                size: 32,
+                color: "2563EB" // Blue
               })
             ],
             spacing: { after: 480 },
             alignment: "center",
+            shading: {
+              type: "solid",
+              color: "F0F9FF", // Very light blue background
+              fill: "F0F9FF"
+            },
             border: {
-              bottom: {
-                color: "9CA3AF", // Medium gray line
+              top: {
+                color: "2563EB",
                 space: 2,
-                style: "single",
-                size: 8
+                style: "double",
+                size: 6
+              },
+              bottom: {
+                color: "2563EB",
+                space: 2,
+                style: "double", 
+                size: 6
               }
             }
           }),
