@@ -39,13 +39,15 @@ function cleanAndParseContent(content: string): Paragraph[] {
               text: "● ", // Bullet point
               bold: true,
               size: 24,
-              color: headerColor
+              color: headerColor,
+              font: "Arial"
             }),
             new TextRun({
               text: trimmedPara,
               bold: true,
               size: 22, // 11pt font
-              color: headerColor
+              color: headerColor,
+              font: "Arial"
             })
           ],
           spacing: { before: 360, after: 180 },
@@ -76,7 +78,8 @@ function cleanAndParseContent(content: string): Paragraph[] {
               text: trimmedPara,
               size: 20, // 10pt font
               color: "1F2937", // Dark text for readability
-              bold: false // Explicitly set to false
+              bold: false, // Explicitly set to false
+              font: "Arial" // Specify font family
             })
           ],
           spacing: { after: 160 },
@@ -125,19 +128,22 @@ router.post('/', async (req, res): Promise<void> => {
                 text: "✦ ", 
                 bold: true, 
                 size: 32,
-                color: "2563EB" // Blue
+                color: "2563EB", // Blue
+                font: "Arial"
               }),
               new TextRun({ 
                 text: title, 
                 bold: true, 
                 size: 28, // 14pt font
-                color: "1F2937"
+                color: "1F2937",
+                font: "Arial"
               }),
               new TextRun({ 
                 text: " ✦", 
                 bold: true, 
                 size: 32,
-                color: "2563EB" // Blue
+                color: "2563EB", // Blue
+                font: "Arial"
               })
             ],
             spacing: { after: 480 },
