@@ -8,12 +8,13 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res): Promise<void> => {
   try {
     const { docxBuffer } = req.body;
 
     if (!docxBuffer) {
-      return res.status(400).json({ error: 'No DOCX buffer provided' });
+      res.status(400).json({ error: 'No DOCX buffer provided' });
+      return;
     }
 
     // Decode base64 buffer
