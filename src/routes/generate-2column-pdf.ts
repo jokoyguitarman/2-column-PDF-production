@@ -10,29 +10,29 @@ const execAsync = promisify(exec);
 const router = express.Router();
 
 function cleanAndParseContent(content: string): Paragraph[] {
-  // Remove formatting markers and split into paragraphs
-  const cleanContent = content
-    .replace(/\*\*\*/g, '') // Remove triple asterisks
-    .replace(/\*\*/g, '') // Remove double asterisks
-    .replace(/###/g, '') // Remove hashtags
-    .replace(/\*([^*]+)\*/g, '$1') // Remove single asterisks but keep content
-    .trim();
-
-  const paragraphs = cleanContent.split('\n\n').filter(p => p.trim());
+  const paragraphs = content.split('\n\n').filter(p => p.trim());
   const docParagraphs: Paragraph[] = [];
   
   paragraphs.forEach((para) => {
     const trimmedPara = para.trim();
     
-    // Check if it's a header (contains "Main Idea:", "Expert Insight:", etc.)
-    const isHeader = /^(Page \d+ Analysis:|Main Idea:|Expert Insight:|Detailed Walkthrough:|Potential Confusion:|Relevance:|Create and Refine|Influence Claude|Evaluate Model|Build, Update)/i.test(trimmedPara);
+    // Check if it's a header using ChatGPT's markdown formatting
+    const isMarkdownHeader = trimmedPara.startsWith('###') || trimmedPara.startsWith('##') || trimmedPara.startsWith('#');
+    const hasBoldFormatting = trimmedPara.includes('**');
     
-    if (isHeader) {
-      // Find where the header label ends (after the colon)
-      const colonIndex = trimmedPara.indexOf(':');
+    // Clean the text by removing markdown markers
+    let cleanText = trimmedPara
+      .replace(/^#+\s*/g, '') // Remove ### ## # from start
+      .replace(/\*\*\*/g, '') // Remove triple asterisks
+      .replace(/\*\*/g, '') // Remove double asterisks
+      .replace(/\*([^*]+)\*/g, '$1'); // Remove single asterisks but keep content
+    
+    if (isMarkdownHeader || hasBoldFormatting) {
+      // It's a header - check if it has a colon to split bold/regular parts
+      const colonIndex = cleanText.indexOf(':');
       if (colonIndex > -1) {
-        const headerLabel = trimmedPara.substring(0, colonIndex + 1); // Include the colon
-        const remainingText = trimmedPara.substring(colonIndex + 1).trim(); // Rest of the text
+        const headerLabel = cleanText.substring(0, colonIndex + 1); // Include the colon
+        const remainingText = cleanText.substring(colonIndex + 1).trim(); // Rest of the text
         
         // Create paragraph with bold header and regular text
         docParagraphs.push(
@@ -62,12 +62,12 @@ function cleanAndParseContent(content: string): Paragraph[] {
           })
         );
       } else {
-        // Header without colon (like "Create and Refine Usage Policy")
+        // Header without colon (entire thing is bold)
         docParagraphs.push(
           new Paragraph({
             children: [
               new TextRun({
-                text: trimmedPara,
+                text: cleanText,
                 bold: true,
                 size: 20, // 10pt font
                 color: "000000", // Black text
@@ -87,7 +87,7 @@ function cleanAndParseContent(content: string): Paragraph[] {
         new Paragraph({
           children: [
             new TextRun({
-              text: trimmedPara,
+              text: cleanText,
               size: 20, // 10pt font
               color: "000000", // Black text
               bold: false,
