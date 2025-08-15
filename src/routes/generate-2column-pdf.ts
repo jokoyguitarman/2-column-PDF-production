@@ -28,22 +28,25 @@ function cleanAndParseContent(content: string): Paragraph[] {
     const isHeader = /^(Page \d+ Analysis:|Main Idea:|Expert Insight:|Detailed Walkthrough:|Potential Confusion:|Relevance:|Create and Refine|Influence Claude|Evaluate Model|Build, Update)/i.test(trimmedPara);
     
     if (isHeader) {
-      // Create header paragraph with background color
+      // Create header paragraph - bold and slightly larger
       docParagraphs.push(
         new Paragraph({
           children: [
             new TextRun({
               text: trimmedPara,
               bold: true,
-              size: 20, // 10pt font
-              color: "FFFFFF" // White text
+              size: 22, // 11pt font - slightly larger for headers
+              color: "1F2937" // Dark gray text
             })
           ],
-          spacing: { before: 240, after: 120 },
-          shading: {
-            type: "solid",
-            color: "2563EB", // Blue background
-            fill: "2563EB"
+          spacing: { before: 300, after: 150 },
+          border: {
+            bottom: {
+              color: "E5E7EB", // Light gray underline
+              space: 1,
+              style: "single",
+              size: 3
+            }
           }
         })
       );
@@ -99,18 +102,18 @@ router.post('/', async (req, res): Promise<void> => {
               new TextRun({ 
                 text: title, 
                 bold: true, 
-                size: 24, // 12pt font
-                color: "1F2937" // Dark gray
+                size: 28, // 14pt font
+                color: "111827" // Very dark gray
               })
             ],
-            spacing: { after: 360 },
+            spacing: { after: 480 },
             alignment: "center",
             border: {
               bottom: {
-                color: "D1D5DB",
-                space: 1,
+                color: "9CA3AF", // Medium gray line
+                space: 2,
                 style: "single",
-                size: 6
+                size: 8
               }
             }
           }),
